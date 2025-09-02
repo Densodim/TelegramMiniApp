@@ -2,10 +2,20 @@ import prisma from "@/lib/prisma";
 import {formatName} from "@/lib/utils";
 
 export default async function Tasks() {
-    const tasks = await prisma.shoppingList.findMany({})
+    const tasks = await prisma.shoppingList.findMany({
+        include: {
+            user: true,
+        },
+        where: {
+            published: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        }
+    })
+    console.log(tasks)
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-            <h2>Task Page</h2>
             {tasks.map(el => (
                 <article key={el.id}
                          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">

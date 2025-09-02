@@ -72,11 +72,12 @@ model Post {
 }
 
 model ShoppingList {
-  id     Int    @id @default(autoincrement())
-  name   String
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
-  items  Item[]
+  id        Int     @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  items     Item[]
+  published Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
