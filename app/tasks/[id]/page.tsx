@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {formatName} from "@/lib/utils";
+import {clsx} from "clsx";
 
 export default async function Task({params}: { params: Promise<{ id: string }> }) {
 
@@ -16,14 +17,20 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
             items: true,
         }
     })
+    const currency = await prisma.currency.findUnique({
+        where: {
+            code: "USD"
+        },
+        include: {
+            ratesTo: true
+        }
+    });
 
-    if (!task) {
+    if (!task || !currency) {
         notFound()
     }
 
-    console.log(task)
     const isUser = session?.user?.email === task.user.email;
-
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -32,6 +39,12 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                     <h2 className="text-4xl font-bold text-gray-900">
                         {task.name}
                     </h2>
+                    <p className="text-sm text-gray-900 p-6">
+                        {currency.name}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 italic">
+                        Date: {new Date(currency.ratesTo[0].createdAt).toLocaleDateString("en-US")}
+                    </p>
                     <Link href={'/tasks/new'}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
                     >
@@ -44,12 +57,27 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                             <Link key={item.id} href={`/tasks/${task.id}/items/${item.id}`}
                                   className="block transition-transform hover:scale-[1.01]">
                                 <article
-                                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-transform">
+                                    className={clsx("bg-white rounded-xl p-6 shadow-sm border hover:shadow-md transition-transform", item.bought ? "border-green-500" : "border-red-500")}>
                                     <h2 className="text-xl font-semibold text-gray-900 mb-2">
                                         {item.name}
                                     </h2>
-                                    <div className="text-sm text-gray-500">
-                                        by {formatName(task.user.name)}
+                                    <div className="flex justify-between items-center mb-2">
+                                        <div className="text-sm text-gray-500">
+                                            by {formatName(task.user.name)}
+                                        </div>
+                                        <div>
+                                            {item.price}-{currency.code}
+                                        </div>
+                                        <div>
+                                            {item.comment && (
+                                                <p className="text-sm text-gray-500 italic">
+                                                    {item.comment}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {item.vatRefundable ? "✅ VAT refundable" : "❌ No VAT refund"}
+                                        </div>
                                     </div>
                                 </article>
                             </Link>
@@ -59,32 +87,5 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
 
             </div>
         </div>
-        // <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        //     <div className="max-w-4xl mx-auto px-4 py-16">
-        //         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-        //             <article>
-        //                 <header className="mb-8">
-        //                     <div className="flex items-center justify-between mb-6">
-        //                         <h2 className="text-4xl font-bold text-gray-900">{task.name}</h2>
-        //                         {isUser && (
-        //                             <Link href={`/tasks/${task.id}/edit`}
-        //                                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-l-lg font-medium transition-colors">
-        //                                 Edit task
-        //                             </Link>
-        //                         )}
-        //                     </div>
-        //
-        //                     {task.published && (
-        //                         <div className="mb-6 bg-yellow-50 text-yellow-800 px-4 py-2">
-        //                             This task is currently a draft
-        //                         </div>
-        //                     )}
-        //
-        //                 </header>
-        //             </article>
-        //
-        //         </div>
-        //     </div>
-        // </div>
     )
 }
