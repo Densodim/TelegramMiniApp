@@ -101,6 +101,11 @@ export async function saveDraft(formData: FormData) {
 }
 
 export async function updateBoughtStatus(formData: FormData) {
+    const session = await auth();
+    if (!session?.user) {
+        redirect("/");
+    }
+
     const itemId = Number(formData.get("itemId"));
     const taskId = Number(formData.get("taskId"));
     const bought = formData.get("bought") === 'true';
@@ -110,5 +115,5 @@ export async function updateBoughtStatus(formData: FormData) {
     })
     revalidatePath(`/tasks/${taskId}/items/${itemId}`);
     revalidatePath("/items")
-    redirect(`/tasks/${taskId}/items/${itemId}`)
+    redirect(`/tasks/${taskId}`)
 }
