@@ -31,7 +31,7 @@ export default async function Item({params}: { params: Promise<{ id: string, ite
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-4xl font-bold text-gray-900">{item.name}</h2>
                                 {isUser && (
-                                    <Link href={`/tasks/${item.id}/items/${item.id}/edit`}
+                                    <Link href={`/tasks/${task.id}/items/${item.id}/edit`}
                                           className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-l-lg font-medium transition-colors">
                                         Edit task
                                     </Link>

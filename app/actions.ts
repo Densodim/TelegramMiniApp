@@ -117,3 +117,7 @@ export async function updateBoughtStatus(formData: FormData) {
     revalidatePath("/items")
     redirect(`/tasks/${taskId}`)
 }
+
+export async function publishTask() {
+
+}
