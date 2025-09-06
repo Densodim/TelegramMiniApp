@@ -1,5 +1,5 @@
 import {auth} from "@/auth";
-import {redirect} from "next/navigation";
+import {notFound, redirect} from "next/navigation";
 
 export default async function EditTask({params}: { params: Promise<{ id: string, itemId: string }> }) {
     const session = await auth();
@@ -7,6 +7,11 @@ export default async function EditTask({params}: { params: Promise<{ id: string,
         redirect("/");
     }
     const {id, itemId} = await params
+
+    if (!id || !itemId) {
+        notFound();
+    }
+
     return (
         <div className="block py-16 px-4">
             Edit Task

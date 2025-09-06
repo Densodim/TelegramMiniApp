@@ -5,6 +5,7 @@ import {notFound, redirect} from "next/navigation";
 import {clsx} from "clsx";
 import Form from "next/form";
 import {updateBoughtStatus} from "@/app/actions";
+import React from "react";
 
 export default async function Item({params}: { params: Promise<{ id: string, itemId: string }> }) {
     const {id, itemId} = await params
@@ -43,45 +44,64 @@ export default async function Item({params}: { params: Promise<{ id: string, ite
                                 </div>
                             )}
                         </header>
-                        <section className="mb-8">
-                            <div className="flex justify-between items-center px-2 py-6">
-                                <p>{item.comment}</p>
-                                <p>{item.price}</p>
-                                <p>{item.store}</p>
-                            </div>
-                            <fieldset
-                                className={clsx("space-y-4 border rounded-2xl p-6 bg-gray-50", item.bought ? "border-green-500" : "border-red-500")}>
-                                <legend className="text-lg font-semibold text-gray-800 mb-2">Bought status</legend>
-
-                                <Form action={updateBoughtStatus} className="flex items-center gap-2">
-                                    <input type="hidden" name="itemId" value={item.id}/>
-                                    <input type="hidden" name="taskId" value={task.id}/>
-                                    <input id="bought" className="peer/bougth" type="radio" name="bought" value="true"
-                                           defaultChecked={item.bought}/>
-                                    <label htmlFor="bought" className="peer-checked/bougth:text-sky-500">Bought</label>
-
-                                    <input id="noBougth" className="peer/noBougth" type="radio" name="bought"
-                                           value="false"
-                                           defaultChecked={!item.bought}/>
-                                    <label htmlFor="noBougth" className="peer-checked/noBougth:text-sky-500">Not yet
-                                        bought</label>
-                                    <div className="hidden peer-checked/bougth:block">This item is marked as bought.
-                                    </div>
-                                    <div className="hidden peer-checked/noBougth:block">This item is not bought yet.
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        className="ml-6 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-                                    >
-                                        Save
-                                    </button>
-                                </Form>
-
-                            </fieldset>
-                        </section>
                     </article>
+                    <article className="mb-8">
+                        <div className="flex justify-between items-center px-2 py-6">
+                            <p>{item.comment}</p>
+                            <p>{item.price}</p>
+                            <p>{item.store}</p>
+                        </div>
+                        <fieldset
+                            className={clsx("space-y-4 border rounded-2xl p-6 bg-gray-50", item.bought ? "border-green-500" : "border-red-500")}>
+                            <legend className="text-lg font-semibold text-gray-800 mb-2">Bought status</legend>
 
+                            <Form action={updateBoughtStatus} className="space-y-4">
+                                <input type="hidden" name="itemId" value={item.id}/>
+                                <input type="hidden" name="taskId" value={task.id}/>
+
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                                    <label htmlFor="bought" className="flex items-center gap-2">
+                                        <input
+                                            id="bought"
+                                            className="peer/bought"
+                                            type="radio"
+                                            name="bought"
+                                            value="true"
+                                            defaultChecked={item.bought}
+                                        />
+                                        <span className="peer-checked/bought:text-sky-500 font-medium">Bought</span>
+                                    </label>
+
+                                    <label htmlFor="noBought" className="flex items-center gap-2">
+                                        <input
+                                            id="noBought"
+                                            className="peer/noBought"
+                                            type="radio"
+                                            name="bought"
+                                            value="false"
+                                            defaultChecked={!item.bought}
+                                        />
+                                        <span
+                                            className="peer-checked/noBought:text-sky-500 font-medium">Not yet bought</span>
+                                    </label>
+                                </div>
+
+                                <div className="text-sm text-gray-600">
+                                    {item.bought
+                                        ? "This item is marked as bought."
+                                        : "This item is not bought yet."}
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
+                                >
+                                    Save
+                                </button>
+                            </Form>
+
+                        </fieldset>
+                    </article>
                 </div>
             </div>
         </div>
