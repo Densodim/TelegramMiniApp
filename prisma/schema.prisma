@@ -90,6 +90,7 @@ model Item {
   price         Float?
   bought        Boolean      @default(false)
   vatRefundable Boolean      @default(false)
+  published     Boolean      @default(false)
   comment       String?
   listId        Int
   list          ShoppingList @relation(fields: [listId], references: [id])

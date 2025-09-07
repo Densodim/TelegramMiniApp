@@ -26,7 +26,7 @@ export default async function EditTask({params}: { params: Promise<{ id: string,
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
             <div className="max-w-2xl mx-auto px-4">
-                <ItemForm item={task.items[0]}/>
+                <ItemForm task={task} item={task.items[0]}/>
             </div>
         </div>
     )

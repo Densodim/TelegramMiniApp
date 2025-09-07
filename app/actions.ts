@@ -118,6 +118,18 @@ export async function updateBoughtStatus(formData: FormData) {
     redirect(`/tasks/${taskId}`)
 }
 
-export async function publishTask() {
+export async function publishTask(formData: FormData) {
+    const session = await auth();
+    if (!session?.user) {
+        redirect("/");
+    }
+    console.log(formData)
+}
 
+export async function saveDraftItem(formData: FormData) {
+    const session = await auth();
+    if (!session?.user) {
+        redirect("/");
+    }
+    console.log(formData)
 }
