@@ -16,7 +16,7 @@ export default async function Item({params}: { params: Promise<{ id: string, ite
 
     const task = await prisma.shoppingList.findUnique({where: {id: parseInt(id)}, include: {user: true}});
     const item = await prisma.item.findUnique({where: {id: parseInt(itemId)}})
-    console.log(item)
+
     if (!task || !item) {
         notFound()
     }

@@ -7,7 +7,7 @@ import {SubmitButton} from "@/components/SubmitButton";
 
 export async function ItemForm({task, item}: ItemFormProps) {
     const shoppingList = await prisma.shoppingList.findMany({})
-    console.log(item);
+
     if (!task || !item || !shoppingList) {
         return <p>No item found</p>;
     }
@@ -33,11 +33,11 @@ export async function ItemForm({task, item}: ItemFormProps) {
                     <InputForm type={'text'} id={"name"} defaultValue={item.name} required={true}
                                placeholder={"Enter your product name"} label={"Product Name"}/>
                     <InputForm type={"number"} id={"price"} defaultValue={item.price} label={"Price"}/>
-                    <InputForm type={"select"} id={""} defaultValue={item.store} label={"Select Store"}
+                    <InputForm type={"select"} id={"store"} defaultValue={item.store} label={"Select Store"}
                                option={shoppingList}/>
                     <InputForm type={"text"} id={"comment"} label={"Comment"} defaultValue={item.comment}
                                placeholder={"Enter your comment"}/>
-                    <CheckboxForm id={"vatRefundable"} label={"vatRefundable"} defaultChecked={item.vatRefundable}/>
+                    <RadioForm name={"vatRefundable"} vatRefundable={item.vatRefundable}/>
                     <div className="flex justify-end px-4">
                         <SubmitButton isPublished={item && item.published}/>
                     </div>
@@ -83,18 +83,26 @@ function InputForm({type, placeholder, id, defaultValue, required, label, option
 }
 
 
-function CheckboxForm({id, label, defaultChecked}: CheckboxFormProps) {
+function RadioForm({name, vatRefundable}: CheckboxFormProps) {
     return (
-        <div className="flex items-center gap-2">
-            <input
-                type="checkbox"
-                id={id}
-                name={id}
-                defaultChecked={defaultChecked}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label htmlFor={id} className="text-sm font-medium text-gray-700">
-                {label}
+        <div className="flex gap-4">
+            <label>
+                <input
+                    type="radio"
+                    name={name}
+                    value="true"
+                    defaultChecked={vatRefundable}
+                />
+                Yes
+            </label>
+            <label>
+                <input
+                    type="radio"
+                    name={name}
+                    value="false"
+                    defaultChecked={!vatRefundable}
+                />
+                No
             </label>
         </div>
     );
@@ -117,7 +125,6 @@ type InputFormProps = {
 }
 
 type CheckboxFormProps = {
-    id: string;
-    label: string;
-    defaultChecked?: boolean;
+    name:string
+    vatRefundable?: boolean;
 };
