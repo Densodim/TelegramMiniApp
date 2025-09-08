@@ -45,7 +45,7 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                     <p className="text-2xl font-bold text-gray-900 italic">
                         Date: {new Date(currency.ratesTo[0].createdAt).toLocaleDateString("en-US")}
                     </p>
-                    <Link href={'/tasks/new'}
+                    <Link href={`/tasks/${task.id}/new`}
                           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
                     >
                         New Task

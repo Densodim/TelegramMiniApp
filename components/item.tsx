@@ -5,10 +5,10 @@ import {publishTask} from "@/app/actions";
 import prisma from "@/lib/prisma";
 import {SubmitButton} from "@/components/SubmitButton";
 
-export async function ItemForm({task, item}: ItemFormProps) {
+export async function ItemForm({task, item, taskId}: ItemFormProps) {
     const shoppingList = await prisma.shoppingList.findMany({})
-
-    if (!task || !item || !shoppingList) {
+    console.log(taskId)
+    if (!shoppingList) {
         return <p>No item found</p>;
     }
 
@@ -19,7 +19,7 @@ export async function ItemForm({task, item}: ItemFormProps) {
                     {!item ? "Create New Item" : "Edit Item"}
                 </h1>
                 {!!item && (
-                    <Link href={`/tasks/${task.id}/items/${item.id}`}
+                    <Link href={`/tasks/${task?.id}/items/${item.id}`}
                           className="text-gray-600 hover:text-gray-800 font-medium transition-colors">
                         Cancel
                     </Link>
@@ -27,17 +27,18 @@ export async function ItemForm({task, item}: ItemFormProps) {
             </div>
             <div className="bg-white rounded-xl shadow-sm border-gray-100 p-6">
                 <Form action={publishTask} className="space-y-6">
-                    {task && <input type="hidden" name="itemId" value={item.id}/>}
+                    {item && <input type="hidden" name="itemId" value={item?.id}/>}
                     {task && <input type="hidden" name="taskId" value={task.id}/>}
+                    {taskId && <input type="hidden" name="id" value={taskId}/>}
 
-                    <InputForm type={'text'} id={"name"} defaultValue={item.name} required={true}
+                    <InputForm type={'text'} id={"name"} defaultValue={item?.name} required={true}
                                placeholder={"Enter your product name"} label={"Product Name"}/>
-                    <InputForm type={"number"} id={"price"} defaultValue={item.price} label={"Price"}/>
-                    <InputForm type={"select"} id={"store"} defaultValue={item.store} label={"Select Store"}
+                    <InputForm type={"number"} id={"price"} defaultValue={item?.price} label={"Price"}/>
+                    <InputForm type={"select"} id={"store"} defaultValue={item?.store} label={"Select Store"}
                                option={shoppingList}/>
-                    <InputForm type={"text"} id={"comment"} label={"Comment"} defaultValue={item.comment}
+                    <InputForm type={"text"} id={"comment"} label={"Comment"} defaultValue={item?.comment}
                                placeholder={"Enter your comment"}/>
-                    <RadioForm name={"vatRefundable"} vatRefundable={item.vatRefundable}/>
+                    <RadioForm name={"vatRefundable"} vatRefundable={item?.vatRefundable}/>
                     <div className="flex justify-end px-4">
                         <SubmitButton isPublished={item && item.published}/>
                     </div>
@@ -112,6 +113,7 @@ function RadioForm({name, vatRefundable}: CheckboxFormProps) {
 type ItemFormProps = {
     task?: ShoppingList;
     item?: Item;
+    taskId?: string;
 }
 
 type InputFormProps = {
@@ -120,11 +122,11 @@ type InputFormProps = {
     label: string;
     required?: boolean;
     placeholder?: string;
-    defaultValue: string | number | null;
+    defaultValue?: string | number | null;
     option?: ShoppingList[];
 }
 
 type CheckboxFormProps = {
-    name:string
+    name: string
     vatRefundable?: boolean;
 };
