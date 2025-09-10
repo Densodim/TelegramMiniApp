@@ -14,7 +14,7 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
         where: {id: parseInt(id)},
         include: {
             user: true,
-            items: true,
+            items: true
         }
     })
     const currency = await prisma.currency.findUnique({

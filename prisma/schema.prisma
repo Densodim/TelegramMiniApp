@@ -78,15 +78,17 @@ model ShoppingList {
   user      User    @relation(fields: [userId], references: [id])
   items     Item[]
   published Boolean @default(false)
+  storeId   Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  store     Store?   @relation(fields: [storeId], references: [id])
 }
 
 model Item {
   id            Int          @id @default(autoincrement())
   name          String
-  store         String?
+  store         Int?
   price         Float?
   bought        Boolean      @default(false)
   vatRefundable Boolean      @default(false)
@@ -97,6 +99,12 @@ model Item {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Store {
+  id    Int            @id @default(autoincrement())
+  name  String
+  lists ShoppingList[]
 }
 
 model Currency {

@@ -123,12 +123,13 @@ export async function publishTask(formData: FormData) {
     if (!session?.user) {
         redirect("/");
     }
+
     const id = formData.get('id') as string;
     const itemId = formData.get("itemId") as string;
     const taskId = formData.get("taskId") as string;
     const name = formData.get("name") as string;
     const price = formData.get("price") as string;
-    const store = formData.get("store") as string;
+    const storeId = Number(formData.get("store"));
     const comment = formData.get("comment") as string;
     const vatRefundable = formData.get("vatRefundable") === "true"
 
@@ -136,47 +137,42 @@ export async function publishTask(formData: FormData) {
         throw new Error("Name is required");
     }
 
+    const shoppingList = await prisma.shoppingList.findFirst({
+        where: {
+            storeId,
+            user: {email: session.user.email!},
+        }
+    })
+
+    if (!shoppingList) {
+        throw new Error("Shopping list is required");
+    }
+
+    const listId = shoppingList.id;
+
     if (itemId) {
-        await prisma.shoppingList.update({
-            where: {
-                id: parseInt(taskId ?? "-1"),
-            },
+        await prisma.item.update({
+            where: {id: parseInt(itemId ?? "-1")},
             data: {
-                items: {
-                    update: {
-                        where: {id: parseInt(itemId ?? "-1")},
-                        data: {
-                            name: name.trim(),
-                            price: price ? parseFloat(price) : null,
-                            comment: comment?.trim(),
-                            store: store.trim(),
-                            vatRefundable: vatRefundable,
-                        }
-                    }
-                }
-            },
-            include: {items: true}
+                name: name.trim(),
+                price: price ? parseFloat(price) : null,
+                comment: comment?.trim(),
+                vatRefundable,
+                listId
+            }
         })
         revalidatePath(`/tasks/${taskId}/items/${itemId}`);
         revalidatePath("/items")
         redirect(`/tasks/${taskId}`)
     } else {
-        await prisma.shoppingList.update({
-            where: {
-                id: parseInt(id ?? "-1"),
-            },
+        await prisma.item.create({
             data: {
-                items: {
-                    create: {
-                        name: name.trim(),
-                        price: price ? parseFloat(price) : null,
-                        comment: comment?.trim(),
-                        store: store.trim(),
-                        vatRefundable: vatRefundable,
-                    }
-                }
-            },
-            include: {items: true}
+                name: name.trim(),
+                price: price ? parseFloat(price) : null,
+                comment: comment?.trim(),
+                vatRefundable,
+                listId
+            }
         })
         revalidatePath("/items")
         redirect(`/tasks/${id}`)

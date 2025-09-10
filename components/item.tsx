@@ -1,4 +1,4 @@
-import {Item, ShoppingList} from "@prisma/client";
+import {Item, ShoppingList, Store} from "@prisma/client";
 import Link from "next/link";
 import Form from "next/form";
 import {publishTask} from "@/app/actions";
@@ -6,9 +6,9 @@ import prisma from "@/lib/prisma";
 import {SubmitButton} from "@/components/SubmitButton";
 
 export async function ItemForm({task, item, taskId}: ItemFormProps) {
-    const shoppingList = await prisma.shoppingList.findMany({})
-    console.log(taskId)
-    if (!shoppingList) {
+    const stores = await prisma.store.findMany({});
+
+    if (!stores || stores.length === 0) {
         return <p>No item found</p>;
     }
 
@@ -34,8 +34,8 @@ export async function ItemForm({task, item, taskId}: ItemFormProps) {
                     <InputForm type={'text'} id={"name"} defaultValue={item?.name} required={true}
                                placeholder={"Enter your product name"} label={"Product Name"}/>
                     <InputForm type={"number"} id={"price"} defaultValue={item?.price} label={"Price"}/>
-                    <InputForm type={"select"} id={"store"} defaultValue={item?.store} label={"Select Store"}
-                               option={shoppingList}/>
+                    <InputForm type={"select"} id={"store"} defaultValue={item?.list?.storeId} label={"Select Store"}
+                               option={stores}/>
                     <InputForm type={"text"} id={"comment"} label={"Comment"} defaultValue={item?.comment}
                                placeholder={"Enter your comment"}/>
                     <RadioForm name={"vatRefundable"} vatRefundable={item?.vatRefundable}/>
@@ -64,7 +64,7 @@ function InputForm({type, placeholder, id, defaultValue, required, label, option
                     >
                         <option value="" disabled>-- Select an Store --</option>
                         {option?.map((option) => (
-                            <option key={option.id} value={option.name}>{option.name}</option>
+                            <option key={option.id} value={option.id}>{option.name}</option>
                         ))}
                     </select>
                 ) : (
@@ -112,7 +112,7 @@ function RadioForm({name, vatRefundable}: CheckboxFormProps) {
 
 type ItemFormProps = {
     task?: ShoppingList;
-    item?: Item;
+    item?: Item & { list?: ShoppingList };
     taskId?: string;
 }
 
@@ -123,7 +123,7 @@ type InputFormProps = {
     required?: boolean;
     placeholder?: string;
     defaultValue?: string | number | null;
-    option?: ShoppingList[];
+    option?: Store[];
 }
 
 type CheckboxFormProps = {
