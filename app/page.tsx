@@ -4,10 +4,7 @@ import Link from "next/link";
 
 import {auth} from "@/auth";
 import {SignInButton, SignOutButton} from "@/components/auth";
-import prisma from "@/lib/prisma";
 import {formatName} from "@/lib/utils";
-
-import type {User} from "@prisma/client";
 import type {Session} from "next-auth";
 import Tasks from "@/app/tasks/page";
 
@@ -61,51 +58,51 @@ function UserMenu({user}: { user: NonNullable<Session["user"]> }) {
     );
 }
 
-function UserCard({user}: { user: User }) {
-    return (
-        <Link
-            href={`/users/${user.id}`}
-            className="block transition-transform hover:scale-[1.02]"
-        >
-            <div
-                className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                {user.image ? (
-                    <Image
-                        src={user.image}
-                        alt={formatName(user.name)}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                    />
-                ) : (
-                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-            <span className="text-gray-500 text-sm font-medium">
-              {(user.name || "User").charAt(0)}
-            </span>
-                    </div>
-                )}
-                <div>
-                    <div className="font-medium text-gray-900">
-                        {formatName(user.name)}
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
-}
+// function UserCard({user}: { user: User }) {
+//     return (
+//         <Link
+//             href={`/users/${user.id}`}
+//             className="block transition-transform hover:scale-[1.02]"
+//         >
+//             <div
+//                 className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+//                 {user.image ? (
+//                     <Image
+//                         src={user.image}
+//                         alt={formatName(user.name)}
+//                         width={40}
+//                         height={40}
+//                         className="rounded-full"
+//                     />
+//                 ) : (
+//                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+//             <span className="text-gray-500 text-sm font-medium">
+//               {(user.name || "User").charAt(0)}
+//             </span>
+//                     </div>
+//                 )}
+//                 <div>
+//                     <div className="font-medium text-gray-900">
+//                         {formatName(user.name)}
+//                     </div>
+//                 </div>
+//             </div>
+//         </Link>
+//     );
+// }
 
 export default async function Home() {
     noStore();
 
     const session = await auth();
-    // limit to 100 users and cache for 60 seconds.
-    const users = await prisma.user.findMany({
-        take: 100,
-        cacheStrategy: {
-            ttl: 60,
-            swr: 60,
-        },
-    });
+    // // limit to 100 users and cache for 60 seconds.
+    // const users = await prisma.user.findMany({
+    //     take: 100,
+    //     cacheStrategy: {
+    //         ttl: 60,
+    //         swr: 60,
+    //     },
+    // });
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -125,22 +122,9 @@ export default async function Home() {
             </header>
 
             <main className="max-w-4xl mx-auto px-4 pt-24 pb-16">
-                <div>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                        Community Members
-                    </h2>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        {users.map((user) => (
-                            <UserCard key={user.id} user={user}/>
-                        ))}
-                    </div>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                        Tasks
-                    </h2>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <Tasks/>
                     </div>
-                </div>
             </main>
         </div>
     );
