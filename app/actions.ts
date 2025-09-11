@@ -190,3 +190,11 @@ export async function saveDraftItem(formData: FormData) {
 export async function publishTask(formData: FormData) {
     return baseSaveItem(formData, true)
 }
+
+export async function deleteItem(itemId: number, taskId: number) {
+    await prisma.item.delete({
+        where: {id: itemId}
+    })
+    revalidatePath("/tasks")
+    revalidatePath(`/tasks/${taskId}`);
+}

@@ -4,6 +4,7 @@ import {notFound} from "next/navigation";
 import Link from "next/link";
 import {formatName} from "@/lib/utils";
 import {clsx} from "clsx";
+import {DeleteButton} from "@/components/DeleteButton";
 
 export default async function Task({params}: { params: Promise<{ id: string }> }) {
 
@@ -54,38 +55,49 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                 {isUser && (
                     <div className="space-y-4">
                         {task.items.map((item) => (
-                            <Link key={item.id} href={`/tasks/${task.id}/items/${item.id}`}
-                                  className="block transition-transform hover:scale-[1.01]">
-                                <article
-                                    className={clsx("bg-white rounded-xl p-6 shadow-sm border hover:shadow-md transition-transform", item.bought ? "border-green-500" : "border-red-500")}>
-                                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                                        {item.name}
-                                    </h2>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <div className="text-sm text-gray-500">
-                                            by {formatName(task.user.name)}
+                            <div
+                                key={item.id}
+                                className="flex items-start justify-between gap-4 bg-white rounded-xl p-6 shadow-sm border
+                   hover:shadow-md transition-transform
+                   hover:scale-[1.01]
+                   group"
+                            >
+                                <Link href={`/tasks/${task.id}/items/${item.id}`}
+                                      className="flex-1 block">
+                                    <article
+                                        className={clsx("transition-transform", item.bought ? "border-green-500" : "border-red-500")}>
+                                        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                                            {item.name}
+                                        </h2>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="text-sm text-gray-500">
+                                                by {formatName(task.user.name)}
+                                            </div>
+                                            <div>
+                                                {item.price}-{currency.code}
+                                            </div>
+                                            <div>
+                                                {item.comment && (
+                                                    <p className="text-sm text-gray-500 italic">
+                                                        {item.comment}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div>
+                                                {item.vatRefundable ? "✅ VAT refundable" : "❌ No VAT refund"}
+                                            </div>
                                         </div>
-                                        <div>
-                                            {item.price}-{currency.code}
-                                        </div>
-                                        <div>
-                                            {item.comment && (
-                                                <p className="text-sm text-gray-500 italic">
-                                                    {item.comment}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <div>
-                                            {item.vatRefundable ? "✅ VAT refundable" : "❌ No VAT refund"}
-                                        </div>
-                                    </div>
-                                    {!item.published && (
-                                        <div className="mb-6 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-md text-sm">
-                                            This post is currently a draft
-                                        </div>
-                                    )}
-                                </article>
-                            </Link>
+                                        {!item.published && (
+                                            <div
+                                                className="mb-6 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-md text-sm">
+                                                This post is currently a draft
+                                            </div>
+                                        )}
+
+                                    </article>
+                                </Link>
+                                <DeleteButton itemId={item.id} taskId={task.id}>Delete</DeleteButton>
+                            </div>
                         ))}
                     </div>
                 )}
