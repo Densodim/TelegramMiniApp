@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import {containsProfanity} from "@/lib/utils";
 import {revalidatePath} from "next/cache";
 import {redirect} from "next/navigation";
+import {saveOrUpdateItem} from "@/lib/items";
 
 export async function publishPost(formData: FormData) {
     const session = await auth();
@@ -118,13 +119,12 @@ export async function updateBoughtStatus(formData: FormData) {
     redirect(`/tasks/${taskId}`)
 }
 
-export async function publishTask(formData: FormData) {
+async function baseSaveItem(formData: FormData, published: boolean) {
     const session = await auth();
     if (!session?.user) {
         redirect("/");
     }
 
-    const id = formData.get('id') as string;
     const itemId = formData.get("itemId") as string;
     const taskId = formData.get("taskId") as string;
     const name = formData.get("name") as string;
@@ -163,42 +163,30 @@ export async function publishTask(formData: FormData) {
 
     const listId = shoppingList.id;
 
-    if (itemId) {
-        await prisma.item.update({
-            where: {id: parseInt(itemId ?? "-1")},
-            data: {
-                name: name.trim(),
-                price: price ? parseFloat(price) : null,
-                comment: comment?.trim(),
-                published: true,
-                vatRefundable,
-                listId
-            }
-        })
-        revalidatePath(`/tasks/${taskId}/items/${itemId}`);
+    await saveOrUpdateItem({
+        itemId: itemId ?? undefined,
+        listId,
+        name,
+        price,
+        comment,
+        vatRefundable,
+        published
+    })
+
+    if (taskId) {
         revalidatePath("/items")
-        redirect(`/tasks/${taskId}`)
+        redirect(`/tasks/${taskId}`);
     } else {
-        await prisma.item.create({
-            data: {
-                name: name.trim(),
-                price: price ? parseFloat(price) : null,
-                comment: comment?.trim(),
-                published:true,
-                vatRefundable,
-                listId
-            }
-        })
         revalidatePath("/items")
-        redirect(`/tasks/${id}`)
+        redirect(`/tasks`)
     }
 }
 
 
 export async function saveDraftItem(formData: FormData) {
-    const session = await auth();
-    if (!session?.user) {
-        redirect("/");
-    }
-    console.log(formData)
+    return baseSaveItem(formData, false)
+}
+
+export async function publishTask(formData: FormData) {
+    return baseSaveItem(formData, true)
 }

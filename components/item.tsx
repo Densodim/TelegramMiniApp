@@ -5,7 +5,7 @@ import {publishTask} from "@/app/actions";
 import prisma from "@/lib/prisma";
 import {SubmitButton} from "@/components/SubmitButton";
 
-export async function ItemForm({task, item, taskId}: ItemFormProps) {
+export async function ItemForm({task, item}: ItemFormProps) {
     const stores = await prisma.store.findMany({});
 
     if (!stores || stores.length === 0) {
@@ -29,7 +29,6 @@ export async function ItemForm({task, item, taskId}: ItemFormProps) {
                 <Form action={publishTask} className="space-y-6">
                     {item && <input type="hidden" name="itemId" value={item?.id}/>}
                     {task && <input type="hidden" name="taskId" value={task.id}/>}
-                    {taskId && <input type="hidden" name="id" value={taskId}/>}
 
                     <InputForm type={'text'} id={"name"} defaultValue={item?.name} required={true}
                                placeholder={"Enter your product name"} label={"Product Name"}/>
@@ -113,7 +112,6 @@ function RadioForm({name, vatRefundable}: CheckboxFormProps) {
 type ItemFormProps = {
     task?: ShoppingList;
     item?: Item & { list?: ShoppingList };
-    taskId?: string;
 }
 
 type InputFormProps = {

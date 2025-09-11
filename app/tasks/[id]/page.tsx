@@ -79,6 +79,11 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                                             {item.vatRefundable ? "✅ VAT refundable" : "❌ No VAT refund"}
                                         </div>
                                     </div>
+                                    {!item.published && (
+                                        <div className="mb-6 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-md text-sm">
+                                            This post is currently a draft
+                                        </div>
+                                    )}
                                 </article>
                             </Link>
                         ))}
