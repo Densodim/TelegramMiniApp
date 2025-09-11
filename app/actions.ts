@@ -137,7 +137,13 @@ export async function publishTask(formData: FormData) {
         throw new Error("Name is required");
     }
 
-    const shoppingList = await prisma.shoppingList.findFirst({
+    const storeName = await prisma.store.findFirst({
+        where: {
+            id: storeId
+        }
+    })
+
+    let shoppingList = await prisma.shoppingList.findFirst({
         where: {
             storeId,
             user: {email: session.user.email!},
@@ -145,8 +151,15 @@ export async function publishTask(formData: FormData) {
     })
 
     if (!shoppingList) {
-        throw new Error("Shopping list is required");
+        shoppingList = await prisma.shoppingList.create({
+            data: {
+                name: storeName?.name ?? '',
+                storeId,
+                userId: Number(session.user.id),
+            },
+        });
     }
+
 
     const listId = shoppingList.id;
 
@@ -157,6 +170,7 @@ export async function publishTask(formData: FormData) {
                 name: name.trim(),
                 price: price ? parseFloat(price) : null,
                 comment: comment?.trim(),
+                published: true,
                 vatRefundable,
                 listId
             }
@@ -170,6 +184,7 @@ export async function publishTask(formData: FormData) {
                 name: name.trim(),
                 price: price ? parseFloat(price) : null,
                 comment: comment?.trim(),
+                published:true,
                 vatRefundable,
                 listId
             }
@@ -178,6 +193,7 @@ export async function publishTask(formData: FormData) {
         redirect(`/tasks/${id}`)
     }
 }
+
 
 export async function saveDraftItem(formData: FormData) {
     const session = await auth();

@@ -12,9 +12,9 @@ export function SubmitButton({isPublished}: { isPublished?: boolean }) {
                 disabled={pending}
                 className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-6 py-2 rounded-lg font-medium transition-colors"
             >
-                {isPublished ? "Update Item" : "Add Item"}
+                {isPublished ? "Update Item" : "Published Item"}
             </button>
-            {!isPublished && (
+            {(!isPublished || false) && (
                 <button
                     formAction={saveDraftItem}
                     disabled={pending}

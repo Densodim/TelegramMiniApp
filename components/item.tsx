@@ -40,7 +40,7 @@ export async function ItemForm({task, item, taskId}: ItemFormProps) {
                                placeholder={"Enter your comment"}/>
                     <RadioForm name={"vatRefundable"} vatRefundable={item?.vatRefundable}/>
                     <div className="flex justify-end px-4">
-                        <SubmitButton isPublished={item && item.published}/>
+                        <SubmitButton isPublished={item?.published}/>
                     </div>
                 </Form>
             </div>
