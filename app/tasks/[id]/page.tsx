@@ -2,8 +2,8 @@ import {auth} from "@/auth";
 import prisma from "@/lib/prisma";
 import {notFound} from "next/navigation";
 import Link from "next/link";
-import {formatName} from "@/lib/utils";
 import {clsx} from "clsx";
+import {formatName} from "@/lib/utils";
 import {DeleteButton} from "@/components/DeleteButton";
 
 export default async function Task({params}: { params: Promise<{ id: string }> }) {
@@ -57,10 +57,10 @@ export default async function Task({params}: { params: Promise<{ id: string }> }
                         {task.items.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex items-start justify-between gap-4 bg-white rounded-xl p-6 shadow-sm border
-                   hover:shadow-md transition-transform
-                   hover:scale-[1.01]
-                   group"
+                                className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 bg-white rounded-xl p-6 shadow-sm border
+                            hover:shadow-md transition-transform
+                            hover:scale-[1.01]
+                            group"
                             >
                                 <Link href={`/tasks/${task.id}/items/${item.id}`}
                                       className="flex-1 block">

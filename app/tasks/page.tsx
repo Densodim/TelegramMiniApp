@@ -24,12 +24,21 @@ export default async function Tasks() {
                     <h2 className="text-2xl font-bold mb-6 text-gray-900">
                         Tasks
                     </h2>
-                    <Link
-                        href={"/tasks/new"}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-                    >
-                        New Shop
-                    </Link>
+                    <div className="inline-flex rounded-md shadow-xs" role="group">
+
+                        <Link
+                            href={"/tasks/new/shop"}
+                            className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                        >
+                            New Shop
+                        </Link>
+                        <Link
+                            href={"/tasks/new/shoppingList"}
+                            className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                        >
+                            New Shopping List
+                        </Link>
+                    </div>
                 </div>
 
 

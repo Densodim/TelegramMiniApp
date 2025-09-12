@@ -198,3 +198,22 @@ export async function deleteItem(itemId: number, taskId: number) {
     revalidatePath("/tasks")
     revalidatePath(`/tasks/${taskId}`);
 }
+
+export async function createShop(formData: FormData) {
+    const name = formData.get("name") as string;
+    if (!name) {
+        throw new Error("Name is required");
+    }
+
+    await prisma.store.create({
+        data: {
+            name
+        }
+    })
+    revalidatePath("/tasks")
+    redirect("/tasks")
+}
+
+export async function createShoppingList(formData: FormData) {
+    console.log(formData)
+}

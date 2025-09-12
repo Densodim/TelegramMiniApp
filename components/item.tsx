@@ -48,7 +48,7 @@ export async function ItemForm({task, item}: ItemFormProps) {
 }
 
 
-function InputForm({type, placeholder, id, defaultValue, required, label, option}: InputFormProps) {
+export function InputForm({type, placeholder, id, defaultValue, required, label, option}: InputFormProps) {
     return (
         <>
             <div>
